@@ -1,0 +1,31 @@
+{
+  "name": "event-loop-stats",
+  "version": "1.0.0",
+  "description": "Exposes stats about the libuv default loop",
+  "main": "src/eventLoopStats.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bripkens/event-loop-stats.git"
+  },
+  "author": "Ben Ripkens <bripkens.dev@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "libuv",
+    "stats",
+    "monitoring",
+    "loop"
+  ],
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "rebuild": "node-gyp rebuild",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "nan": "^2.0.5"
+  },
+  "gypfile": true,
+  "devDependencies": {
+    "chai": "3.3.0",
+    "mocha": "2.3.3"
+  }
+}
