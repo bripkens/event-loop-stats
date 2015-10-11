@@ -1,10 +1,9 @@
 #include <nan.h>
-#include <limits.h>
 
 using namespace v8;
 
-const uint32_t maxPossibleNumber = std::numeric_limits<uint32_t>::max();
-const uint32_t minPossibleNumber = std::numeric_limits<uint32_t>::min();
+const uint32_t maxPossibleNumber = 4294967295;
+const uint32_t minPossibleNumber = 0;
 
 uv_check_t check_handle;
 uint32_t min;
