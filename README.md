@@ -27,9 +27,10 @@ Stats {
 ```
 
 ## Property insights
-TODO
-
-
+ - `max`: Maximum number of milliseconds spent in a single loop since last `sense call`.
+ - `min`: Minimum number of milliseconds spent in a single loop since last `sense call`.
+ - `sum`: Total number of milliseconds spent in the loop since last `sense call`.
+ - `num`: Total number of loops since last `sense call`.
 
 ## Node version compatibility
 `event-loop-stats` depends on C++ extensions which are compiled when the `event-loop-stats` module is installed. Compatibility information can be inspected via the [Travis-CI build jobs](https://travis-ci.org/bripkens/event-loop-stats).
