@@ -84,7 +84,7 @@ NAN_MODULE_INIT(init) {
   reset();
 
   uv_check_init(uv_default_loop(), &check_handle);
-  uv_check_start(&check_handle, &on_check);
+  uv_check_start(&check_handle, reinterpret_cast<uv_check_cb>(on_check));
   uv_unref(reinterpret_cast<uv_handle_t*>(&check_handle));
 
   Nan::Set(target,
