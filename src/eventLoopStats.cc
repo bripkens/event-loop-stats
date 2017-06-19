@@ -11,27 +11,31 @@ uint32_t max;
 uint32_t num;
 uint32_t sum;
 
+uint32_t previous_now;
+
 void reset() {
   min = maxPossibleNumber;
   max = minPossibleNumber;
   num = 0;
   sum = 0;
+  previous_now = maxPossibleNumber;
 }
 
-// See the following documentation for reference of what 'check'
-// means and when it is executed + the loop now time updates:
-// http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop
+// Original version checked uv_hrtime() against uv_now(handle->loop), which
+// doesn't seem to work -- it doesn't detect e.g. long event loop iterations
+// caused by a large for loop. Checking against the time of the same point at
+// the last iteration of the event loop does.
 void on_check(uv_check_t* handle) {
-  const uint64_t start_time = uv_now(handle->loop);
-  // uv_hrtime is expressed in nanos, but the loop start time is
-  // expressed in millis.
+  // convert to milliseconds
   const uint64_t now = uv_hrtime() / static_cast<uint64_t>(1e6);
   uint64_t duration;
-  if (start_time >= now) {
+  if (previous_now >= now) {
     duration = 0;
   } else {
-    duration = now - start_time;
+    duration = now - previous_now;
   }
+
+  previous_now = now;
 
   num += 1;
   sum += duration;
