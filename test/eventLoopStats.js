@@ -23,4 +23,21 @@ describe('eventLoopStats', function() {
     }, 1000);
   });
 
+  it('should actually detect a blocked eventloop', function(done) {
+    // Get stats to reset max
+    eventLoopStats.sense();
+    // On the next tick, block for 500ms
+    setTimeout(function() {
+      var waitUntill = new Date(Date.now() + 500);
+      while(waitUntill > new Date()) {};
+
+      // On the next tick, detect stats again
+      setTimeout(function() {
+        var stats = eventLoopStats.sense();
+        expect(stats.max).to.be.gt(450);
+        done();
+      }, 0);
+    }, 0)
+  });
+
 });
