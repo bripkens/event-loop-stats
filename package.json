@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/bripkens/event-loop-stats.git"
   },
-  "author": "Ben Ripkens <bripkens.dev@gmail.com>",
+  "author": "Ben Ripkens <bripkens@gmail.com>",
   "license": "MIT",
   "keywords": [
     "libuv",
@@ -20,15 +20,15 @@
     "rebuild": "node-gyp rebuild",
     "test": "mocha"
   },
-  "engines" : {
-    "node" : ">=4.0.0"
+  "engines": {
+    "node": ">=4.0.0"
   },
   "dependencies": {
     "nan": "^2.10.0"
   },
   "gypfile": true,
   "devDependencies": {
-    "chai": "3.3.0",
-    "mocha": "2.3.3"
+    "chai": "4.1.2",
+    "mocha": "5.2.0"
   }
 }
