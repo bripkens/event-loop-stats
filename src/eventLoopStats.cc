@@ -3,11 +3,11 @@
 using namespace v8;
 
 uv_check_t check_handle;
-uint64_t old_usage;
-uint64_t min;
-uint64_t max;
-uint64_t num;
-uint64_t sum;
+uint32_t old_usage;
+uint32_t min;
+uint32_t max;
+uint32_t num;
+uint32_t sum;
 
 void reset() {
   min = 0;
@@ -16,7 +16,7 @@ void reset() {
   sum = 0;
 }
 
-uint64_t getUsage() {
+uint32_t getUsage() {
   uv_rusage_t usage;
   uv_getrusage(&usage);
 
@@ -32,8 +32,8 @@ uint64_t getUsage() {
 // means and when it is executed + the loop now time updates:
 // http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop
 void on_check(uv_check_t* handle) {
-  const uint64_t new_usage = getUsage();
-  uint64_t duration = new_usage - old_usage;
+  const uint32_t new_usage = getUsage();
+  uint32_t duration = new_usage - old_usage;
 
   if (num == 0) {
     min = max = duration;
