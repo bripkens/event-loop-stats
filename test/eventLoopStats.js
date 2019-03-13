@@ -23,4 +23,21 @@ describe('eventLoopStats', function() {
     }, 1000);
   });
 
+  it('should detect blocking operations', function(done) {
+    const DELAY = 100;
+
+    setTimeout(function() {
+      // block the event loop
+      const end = Date.now() + DELAY;
+      while (Date.now() < end) {}
+    });
+
+    setTimeout(function() {
+      var stats = eventLoopStats.sense();
+      expect(stats.max).to.be.gte(DELAY);
+      expect(stats.sum).to.be.gte(stats.min + stats.max);
+      done();
+    }, 200);
+  });
+
 });

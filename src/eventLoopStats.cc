@@ -2,35 +2,41 @@
 
 using namespace v8;
 
-const uint32_t maxPossibleNumber = 4294967295;
-const uint32_t minPossibleNumber = 0;
-
 uv_check_t check_handle;
-uint32_t min;
-uint32_t max;
-uint32_t num;
-uint32_t sum;
+uint64_t old_usage;
+uint64_t min;
+uint64_t max;
+uint64_t num;
+uint64_t sum;
 
 void reset() {
-  min = maxPossibleNumber;
-  max = minPossibleNumber;
+  min = 0;
+  max = 0;
   num = 0;
   sum = 0;
+}
+
+uint64_t getUsage() {
+  uv_rusage_t usage;
+  uv_getrusage(&usage);
+
+  return (
+    usage.ru_utime.tv_sec * 1e3 +
+    usage.ru_utime.tv_usec / 1e3 +
+    usage.ru_stime.tv_sec * 1e3 +
+    usage.ru_stime.tv_usec / 1e3
+  );
 }
 
 // See the following documentation for reference of what 'check'
 // means and when it is executed + the loop now time updates:
 // http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop
 void on_check(uv_check_t* handle) {
-  const uint64_t start_time = uv_now(handle->loop);
-  // uv_hrtime is expressed in nanos, but the loop start time is
-  // expressed in millis.
-  const uint64_t now = uv_hrtime() / static_cast<uint64_t>(1e6);
-  uint64_t duration;
-  if (start_time >= now) {
-    duration = 0;
-  } else {
-    duration = now - start_time;
+  const uint64_t new_usage = getUsage();
+  uint64_t duration = new_usage - old_usage;
+
+  if (num == 0) {
+    min = max = duration;
   }
 
   num += 1;
@@ -41,6 +47,8 @@ void on_check(uv_check_t* handle) {
   if (duration > max) {
     max = duration;
   }
+
+  old_usage = new_usage;
 }
 
 
@@ -81,6 +89,8 @@ static NAN_METHOD(sense) {
 
 NAN_MODULE_INIT(init) {
   reset();
+
+  old_usage = getUsage();
 
   uv_check_init(uv_default_loop(), &check_handle);
   uv_check_start(&check_handle, reinterpret_cast<uv_check_cb>(on_check));
