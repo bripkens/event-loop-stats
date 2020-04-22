@@ -6,46 +6,72 @@ const uint32_t maxPossibleNumber = 4294967295;
 const uint32_t minPossibleNumber = 0;
 
 uv_check_t check_handle;
-uint32_t min;
-uint32_t max;
-uint32_t num;
-uint32_t sum;
 
+// The minimum event loop duration since the last sense() call.
+uint32_t min;
+// The maximum event loop duration since the last sense() call.
+uint32_t max;
+// The sum of event loop durations the last sense() call.
+uint32_t sum;
+// The number of event loop iterations since the last sense() call.
+uint32_t num;
+
+uint32_t previous_now = maxPossibleNumber;
+
+// This will be called after each sense call.
 void reset() {
   min = maxPossibleNumber;
   max = minPossibleNumber;
-  num = 0;
   sum = 0;
+  num = 0;
 }
 
-// See the following documentation for reference of what 'check'
-// means and when it is executed + the loop now time updates:
-// http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop
+// This will be called once per event loop iteration, right after polling
+// for i/o. See http://docs.libuv.org/en/v1.x/design.html#the-i-o-loop for a
+// general overview and http://docs.libuv.org/en/v1.x/check.html for details.
 void on_check(uv_check_t* handle) {
-  const uint64_t start_time = uv_now(handle->loop);
-  // uv_hrtime is expressed in nanos, but the loop start time is
-  // expressed in millis.
+  // An earlier incarnation of event-loop-stats checked uv_hrtime() against
+  // uv_now(handle->loop), which doesn't seem to work -- for example, it does
+  // not detect long event loop iterations caused by a synchronous block due to
+  // long running for- or while-loops. Checking against the time of the same
+  // point at the last iteration of the event loop also covers these cases.
+
+  // Convert the timestamp to milliseconds (uv_hrtime yields nanos).
   const uint64_t now = uv_hrtime() / static_cast<uint64_t>(1e6);
   uint64_t duration;
-  if (start_time >= now) {
+  if (previous_now >= now) {
+    // This only happens on the very first call on_check call. Since we have no
+    // timestamp to compare to from an earlier on_check call, we start by
+    // assuming an event loop lag of zero.
     duration = 0;
   } else {
-    duration = now - start_time;
+    // Calculate the duration since the last on_check call - this is the
+    // event loop lag.
+    duration = now - previous_now;
   }
 
-  num += 1;
-  sum += duration;
+
+  // save min/max values
   if (duration < min) {
     min = duration;
   }
   if (duration > max) {
     max = duration;
   }
+
+  // Sum up all durations between two consecutive sense() calls.
+  sum += duration;
+
+  // Simply count all event loop iterations between two sense() calls.
+  num += 1;
+
+  // Save the current timestamp for the next on_check call for comparison.
+  previous_now = now;
 }
 
 
 static NAN_METHOD(sense) {
-  // reset min and max counters when there were no calls.
+  // Reset min and max counters when there were no calls.
   if (num == 0) {
     min = 0;
     max = 0;
