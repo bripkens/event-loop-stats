@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+ - Detect synchronous blocks
+
 ## 1.2.0
  - Support Node.js v12
 
