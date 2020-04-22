@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0
  - Detect synchronous blocks
 
 ## 1.2.0
