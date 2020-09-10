@@ -34,3 +34,6 @@ Stats {
 
 ## Node version compatibility
 `event-loop-stats` depends on C++ extensions which are compiled when the `event-loop-stats` module is installed. Compatibility information can be inspected via the [Travis-CI build jobs](https://travis-ci.org/bripkens/event-loop-stats).
+
+## Webpack compatibility
+Webpack requires [node-loader](https://www.npmjs.com/package/node-loader) as `event-loop-stats` is compiled to binary module upon install.
