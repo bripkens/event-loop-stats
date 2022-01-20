@@ -2,8 +2,10 @@
 
 using namespace v8;
 
-const uint32_t maxPossibleNumber = 4294967295;
-const uint32_t minPossibleNumber = 0;
+// Casting -1 to an uint will give the max uint value
+const uint32_t maxPossibleUint32 = -1;
+const uint64_t maxPossibleUint64 = -1;
+const uint32_t minPossibleUint32 = 0;
 
 uv_check_t check_handle;
 
@@ -16,12 +18,12 @@ uint32_t sum;
 // The number of event loop iterations since the last sense() call.
 uint32_t num;
 
-uint32_t previous_now = maxPossibleNumber;
+uint64_t previous_now = maxPossibleUint64;
 
 // This will be called after each sense call.
 void reset() {
-  min = maxPossibleNumber;
-  max = minPossibleNumber;
+  min = maxPossibleUint32;
+  max = minPossibleUint32;
   sum = 0;
   num = 0;
 }
@@ -36,9 +38,9 @@ void on_check(uv_check_t* handle) {
   // long running for- or while-loops. Checking against the time of the same
   // point at the last iteration of the event loop also covers these cases.
 
-  // Convert the timestamp to milliseconds (uv_hrtime yields nanos).
-  const uint64_t now = uv_hrtime() / static_cast<uint64_t>(1e6);
-  uint64_t duration;
+  const uint64_t now = uv_hrtime();
+  uint32_t duration;
+
   if (previous_now >= now) {
     // This only happens on the very first call on_check call. Since we have no
     // timestamp to compare to from an earlier on_check call, we start by
@@ -47,9 +49,9 @@ void on_check(uv_check_t* handle) {
   } else {
     // Calculate the duration since the last on_check call - this is the
     // event loop lag.
-    duration = now - previous_now;
+    // And convert to milliseconds (uv_hrtime yields nanos).
+    duration = (now - previous_now) / static_cast<uint64_t>(1e6);
   }
-
 
   // save min/max values
   if (duration < min) {
