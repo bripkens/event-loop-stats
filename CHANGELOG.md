@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4.0
+ - Expose TypeScript types.
+
 ## 1.3.0
  - Detect synchronous blocks
 
