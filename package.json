@@ -19,7 +19,7 @@
   "scripts": {
     "install": "node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
-    "test": "mocha && tsc --noEmit --strict --esModuleInterop --module=commonjs test/types.ts"
+    "test": "mocha && tsc --noEmit --strict --esModuleInterop --module commonjs test/types.ts"
   },
   "engines": {
     "node": ">=4.0.0"

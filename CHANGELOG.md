@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4.1
+ - Fix issues caused by `uv_hrtime()` returning a value that is greater than the max possible `uint32` value.
+
 ## 1.4.0
  - Expose TypeScript types.
 
