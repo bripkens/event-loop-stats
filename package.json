@@ -1,6 +1,6 @@
 {
   "name": "event-loop-stats",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Exposes stats about the libuv default loop",
   "main": "src/eventLoopStats.js",
   "types": "src/eventLoopStats.d.ts",
