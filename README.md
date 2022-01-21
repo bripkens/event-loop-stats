@@ -1,8 +1,6 @@
 <h1 align="center">event-loop-stats</h1>
 <p align="center">Exposes stats about the libuv default loop</p>
 
-[![Build Status](https://travis-ci.org/bripkens/event-loop-stats.svg?branch=master)](https://travis-ci.org/bripkens/event-loop-stats)
-
 ## Installation
 
 ```
