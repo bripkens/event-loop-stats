@@ -25,7 +25,8 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "nan": "^2.14.0"
+    "nan": "^2.14.0",
+    "node-gyp": "^9.4.0"
   },
   "gypfile": true,
   "devDependencies": {
